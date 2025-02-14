@@ -1,6 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Timer from './components/Timer'
 import './styles/global.scss'
+
+const STORAGE_KEY = 'agenda-timer-data' // ローカルストレージのキー名
 
 function App() {
   const [agendaItems, setAgendaItems] = useState<
@@ -8,30 +10,52 @@ function App() {
   >([])
   const [timers, setTimers] = useState<{ topic: string; time: number }[]>([])
 
-  const addAgendaItem = () => {
-    setAgendaItems([...agendaItems, { topic: '', minutes: 0, seconds: 1 }]) // デフォルトは 00:01
+  // 🌟 1️⃣ ローカルストレージからデータを読み込む
+  useEffect(() => {
+    const savedData = localStorage.getItem(STORAGE_KEY)
+    if (savedData) {
+      setAgendaItems(JSON.parse(savedData))
+    }
+  }, [])
+
+  // 🌟 2️⃣ データをローカルストレージに保存
+  const saveToLocalStorage = (data: typeof agendaItems) => {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   }
 
-  const updateAgendaItem = (index: number, field: string, value: number) => {
+  const addAgendaItem = () => {
+    const newAgenda = [...agendaItems, { topic: '', minutes: 0, seconds: 1 }]
+    setAgendaItems(newAgenda)
+    saveToLocalStorage(newAgenda)
+  }
+
+  const updateAgendaItem = (
+    index: number,
+    field: string,
+    value: number | string
+  ) => {
     const newAgenda = [...agendaItems]
     if (field === 'topic') {
-      newAgenda[index].topic = value as unknown as string
+      newAgenda[index].topic = value as string
     } else if (field === 'minutes') {
-      newAgenda[index].minutes = Math.max(0, value) // 負の値を防ぐ
+      newAgenda[index].minutes = Math.max(0, value as number)
     } else if (field === 'seconds') {
-      newAgenda[index].seconds = Math.min(59, Math.max(0, value)) // 0~59 に制限
+      newAgenda[index].seconds = Math.min(59, Math.max(0, value as number))
     }
     setAgendaItems(newAgenda)
+    saveToLocalStorage(newAgenda)
   }
 
   const removeAgendaItem = (index: number) => {
-    setAgendaItems(agendaItems.filter((_, i) => i !== index))
+    const newAgenda = agendaItems.filter((_, i) => i !== index)
+    setAgendaItems(newAgenda)
+    saveToLocalStorage(newAgenda)
   }
 
   const generateTimers = () => {
     const convertedTimers = agendaItems.map((item) => ({
       topic: item.topic,
-      time: item.minutes * 60 + item.seconds, // 分・秒を「秒数」に変換
+      time: item.minutes * 60 + item.seconds,
     }))
     setTimers(convertedTimers)
   }
@@ -46,13 +70,7 @@ function App() {
               type="text"
               placeholder="トピック名"
               value={item.topic}
-              onChange={(e) =>
-                updateAgendaItem(
-                  index,
-                  'topic',
-                  e.target.value as unknown as number
-                )
-              }
+              onChange={(e) => updateAgendaItem(index, 'topic', e.target.value)}
             />
             <input
               type="number"
