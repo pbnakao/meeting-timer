@@ -7,7 +7,7 @@ interface TimerProps {
 }
 
 const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
-  const [timeLeft, setTimeLeft] = useState(initialTime * 60)
+  const [timeLeft, setTimeLeft] = useState(initialTime)
   const [isRunning, setIsRunning] = useState(false)
 
   // オーディオの準備
@@ -42,7 +42,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
       <button onClick={() => setIsRunning(!isRunning)}>
         {isRunning ? '一時停止' : '開始'}
       </button>
-      <button onClick={() => setTimeLeft(initialTime * 60)}>リセット</button>
+      <button onClick={() => setTimeLeft(initialTime)}>リセット</button>
     </div>
   )
 }

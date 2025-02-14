@@ -4,22 +4,23 @@ import './styles/global.scss'
 
 function App() {
   const [agendaItems, setAgendaItems] = useState<
-    { topic: string; time: number }[]
+    { topic: string; minutes: number; seconds: number }[]
   >([])
   const [timers, setTimers] = useState<{ topic: string; time: number }[]>([])
 
   const addAgendaItem = () => {
-    setAgendaItems([...agendaItems, { topic: '', time: 1 }])
+    setAgendaItems([...agendaItems, { topic: '', minutes: 0, seconds: 1 }]) // デフォルトは 00:01
   }
 
-  const updateAgendaItem = (
-    index: number,
-    field: string,
-    value: string | number
-  ) => {
+  const updateAgendaItem = (index: number, field: string, value: number) => {
     const newAgenda = [...agendaItems]
-    if (field === 'topic') newAgenda[index].topic = value as string
-    if (field === 'time') newAgenda[index].time = Number(value)
+    if (field === 'topic') {
+      newAgenda[index].topic = value as unknown as string
+    } else if (field === 'minutes') {
+      newAgenda[index].minutes = Math.max(0, value) // 負の値を防ぐ
+    } else if (field === 'seconds') {
+      newAgenda[index].seconds = Math.min(59, Math.max(0, value)) // 0~59 に制限
+    }
     setAgendaItems(newAgenda)
   }
 
@@ -28,7 +29,11 @@ function App() {
   }
 
   const generateTimers = () => {
-    setTimers([...agendaItems])
+    const convertedTimers = agendaItems.map((item) => ({
+      topic: item.topic,
+      time: item.minutes * 60 + item.seconds, // 分・秒を「秒数」に変換
+    }))
+    setTimers(convertedTimers)
   }
 
   return (
@@ -41,14 +46,32 @@ function App() {
               type="text"
               placeholder="トピック名"
               value={item.topic}
-              onChange={(e) => updateAgendaItem(index, 'topic', e.target.value)}
+              onChange={(e) =>
+                updateAgendaItem(
+                  index,
+                  'topic',
+                  e.target.value as unknown as number
+                )
+              }
             />
             <input
               type="number"
-              placeholder="時間(分)"
-              min="1"
-              value={item.time}
-              onChange={(e) => updateAgendaItem(index, 'time', e.target.value)}
+              placeholder="分"
+              min="0"
+              value={item.minutes}
+              onChange={(e) =>
+                updateAgendaItem(index, 'minutes', Number(e.target.value))
+              }
+            />
+            <input
+              type="number"
+              placeholder="秒"
+              min="0"
+              max="59"
+              value={item.seconds}
+              onChange={(e) =>
+                updateAgendaItem(index, 'seconds', Number(e.target.value))
+              }
             />
             <button onClick={() => removeAgendaItem(index)}>削除</button>
           </div>
