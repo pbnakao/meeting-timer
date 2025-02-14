@@ -16,6 +16,26 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
   // オーディオの準備
   const alarmSound = new Audio('/audio/alarm.mp3')
 
+  // タブのタイトルを更新する関数
+  const updateDocumentTitle = (title: string) => {
+    document.title = title
+  }
+
+  // ブラウザ通知を送る関数
+  const sendNotification = () => {
+    if (Notification.permission === 'granted') {
+      const notification = new Notification('タイマー終了', {
+        body: `${topic} の時間が終了しました！`,
+        icon: '/icon.png', // 任意のアイコン
+      })
+      // 通知をクリックしたらウィンドウをフォーカス
+      notification.onclick = () => {
+        window.focus()
+        updateDocumentTitle('ミーティングタイマー')
+      }
+    }
+  }
+
   useEffect(() => {
     if (isRunning && timeLeft > 0) {
       timer = setInterval(() => {
@@ -25,6 +45,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
       // 🔥 手動リセット時はアラームを鳴らさない
       setIsRunning(false)
       alarmSound.play()
+      sendNotification()
       document.title = '⏳ タイマー終了！'
     }
 
@@ -32,6 +53,18 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
       if (timer) clearInterval(timer)
     }
   }, [isRunning, timeLeft])
+
+  // 通知の許可をリクエスト
+  useEffect(() => {
+    if (Notification.permission === 'default') {
+      Notification.requestPermission().then((permission) => {
+        console.log('通知の許可:', permission)
+      })
+    }
+
+    // ページを開いたときにタイトルを元に戻す
+    return () => updateDocumentTitle('ミーティングタイマー')
+  }, [])
 
   // 🌟 延長機能
   const extendTime = (seconds: number) => {
