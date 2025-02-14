@@ -14,7 +14,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
   let timer: ReturnType<typeof setInterval> | null = null // 型を統一
 
   // オーディオの準備
-  const alarmSound = new Audio('/audio/alarm.mp3')
+  const alarmSound = new Audio('/meeting-timer/audio/alarm.mp3')
 
   // タブのタイトルを更新する関数
   const updateDocumentTitle = (title: string) => {
