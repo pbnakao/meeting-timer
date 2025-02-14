@@ -1,0 +1,34 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background-color: #f9f9f9;
+}
+
+.agenda-container {
+  max-width: 500px;
+  margin: auto;
+}
+
+.agenda-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+input[type='text'],
+input[type='number'] {
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.timer-list {
+  margin-top: 20px;
+}
+
+.timer-item {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-bottom: 5px;
+  background-color: #fff;
+}
