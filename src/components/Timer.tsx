@@ -9,6 +9,7 @@ interface TimerProps {
 const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime)
   const [isRunning, setIsRunning] = useState(false)
+  const [isManuallyReset, setIsManuallyReset] = useState(false) // 🔥 手動リセットフラグを追加
 
   let timer: ReturnType<typeof setInterval> | null = null // 型を統一
 
@@ -20,7 +21,8 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
       timer = setInterval(() => {
         setTimeLeft((prev) => prev - 1)
       }, 1000)
-    } else if (timeLeft === 0) {
+    } else if (timeLeft === 0 && !isManuallyReset) {
+      // 🔥 手動リセット時はアラームを鳴らさない
       setIsRunning(false)
       alarmSound.play()
       document.title = '⏳ タイマー終了！'
@@ -34,6 +36,14 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
   // 🌟 延長機能
   const extendTime = (seconds: number) => {
     setTimeLeft((prev) => prev + seconds)
+  }
+
+  // 🌟 0秒リセット機能（アラームを鳴らさない）
+  const resetToZero = () => {
+    setIsManuallyReset(true) // 🔥 手動リセットしたことを記録
+    setTimeLeft(0)
+    setIsRunning(false) // タイマーも停止
+    setTimeout(() => setIsManuallyReset(false), 1000) // 🔥 1秒後にフラグを戻す（次の通常動作に影響しないように）
   }
 
   const formatTime = (seconds: number) => {
@@ -50,6 +60,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
         {isRunning ? '一時停止' : '開始'}
       </button>
       <button onClick={() => setTimeLeft(initialTime)}>リセット</button>
+      <button onClick={resetToZero}>⏹ 0秒にリセット</button>
       <button onClick={() => extendTime(60)}>+1分</button>
       <button onClick={() => extendTime(300)}>+5分</button>
     </div>
