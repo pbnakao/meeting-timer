@@ -1,34 +1,70 @@
 import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import './styles/global.scss'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [agendaItems, setAgendaItems] = useState<
+    { topic: string; time: number }[]
+  >([])
+  const [timers, setTimers] = useState<{ topic: string; time: number }[]>([])
+
+  const addAgendaItem = () => {
+    setAgendaItems([...agendaItems, { topic: '', time: 1 }])
+  }
+
+  const updateAgendaItem = (
+    index: number,
+    field: string,
+    value: string | number
+  ) => {
+    const newAgenda = [...agendaItems]
+    if (field === 'topic') newAgenda[index].topic = value as string
+    if (field === 'time') newAgenda[index].time = Number(value)
+    setAgendaItems(newAgenda)
+  }
+
+  const removeAgendaItem = (index: number) => {
+    setAgendaItems(agendaItems.filter((_, i) => i !== index))
+  }
+
+  const generateTimers = () => {
+    setTimers([...agendaItems])
+  }
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="agenda-container">
+      <h2>アジェンダ入力</h2>
+      <div id="agenda-list">
+        {agendaItems.map((item, index) => (
+          <div key={index} className="agenda-item">
+            <input
+              type="text"
+              placeholder="トピック名"
+              value={item.topic}
+              onChange={(e) => updateAgendaItem(index, 'topic', e.target.value)}
+            />
+            <input
+              type="number"
+              placeholder="時間(分)"
+              min="1"
+              value={item.time}
+              onChange={(e) => updateAgendaItem(index, 'time', e.target.value)}
+            />
+            <button onClick={() => removeAgendaItem(index)}>削除</button>
+          </div>
+        ))}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
+      <button onClick={addAgendaItem}>アジェンダ追加</button>
+      <button onClick={generateTimers}>タイマー生成</button>
+
+      <h2>タイマー一覧</h2>
+      <div id="timer-list" className="timer-list">
+        {timers.map((item, index) => (
+          <div key={index} className="timer-item">
+            <strong>{item.topic}</strong> - {item.time}分
+          </div>
+        ))}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   )
 }
 
