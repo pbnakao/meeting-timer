@@ -10,6 +10,9 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
   const [timeLeft, setTimeLeft] = useState(initialTime * 60)
   const [isRunning, setIsRunning] = useState(false)
 
+  // オーディオの準備
+  const alarmSound = new Audio('/audio/alarm.mp3')
+
   useEffect(() => {
     let timer: ReturnType<typeof setInterval> | null = null
     if (isRunning && timeLeft > 0) {
@@ -18,6 +21,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
       }, 1000)
     } else if (timeLeft === 0) {
       setIsRunning(false)
+      alarmSound.play() // 音を再生
     }
 
     return () => {
