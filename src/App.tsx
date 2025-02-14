@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import Timer from './components/Timer'
 import './styles/global.scss'
 
 function App() {
@@ -59,9 +60,7 @@ function App() {
       <h2>タイマー一覧</h2>
       <div id="timer-list" className="timer-list">
         {timers.map((item, index) => (
-          <div key={index} className="timer-item">
-            <strong>{item.topic}</strong> - {item.time}分
-          </div>
+          <Timer key={index} topic={item.topic} initialTime={item.time} />
         ))}
       </div>
     </div>
