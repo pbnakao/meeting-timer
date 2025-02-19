@@ -5,6 +5,10 @@ import './styles/global.scss'
 const STORAGE_KEY = 'agenda-timer-data' // ローカルストレージのキー名
 
 function App() {
+  useEffect(() => {
+    document.title = 'アジェンダタイマー' // 初期表示時のタブ名を設定
+  }, [])
+
   const [agendaItems, setAgendaItems] = useState<
     { topic: string; minutes: number; seconds: number }[]
   >([])

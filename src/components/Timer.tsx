@@ -31,7 +31,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
       // 通知をクリックしたらウィンドウをフォーカス
       notification.onclick = () => {
         window.focus()
-        updateDocumentTitle('ミーティングタイマー')
+        updateDocumentTitle('アジェンダタイマー')
       }
     }
   }
@@ -63,7 +63,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime }) => {
     }
 
     // ページを開いたときにタイトルを元に戻す
-    return () => updateDocumentTitle('ミーティングタイマー')
+    return () => updateDocumentTitle('アジェンダタイマー')
   }, [])
 
   // 🌟 延長機能
