@@ -32,7 +32,9 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime, onAddHistory }) => {
 
       // タイマー終了時に合計延長をログ
       const totalExtendedMin = Math.floor(extendedTime / 60)
-      onAddHistory(`タイマー終了 (${topic}): 合計 ${totalExtendedMin}分 延長`)
+      onAddHistory(
+        `⏳ タイマー終了 (${topic}): 合計 ${totalExtendedMin}分 延長`
+      )
 
       document.title = '⏳ タイマー終了！'
     }
@@ -59,7 +61,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime, onAddHistory }) => {
   const handleReset = () => {
     // リセット前に合計延長をログ
     const totalExtendedMin = Math.floor(extendedTime / 60)
-    onAddHistory(`リセット (${topic}): 合計 ${totalExtendedMin}分 延長`)
+    onAddHistory(`⏳ リセット (${topic}): 合計 ${totalExtendedMin}分 延長`)
 
     setTimeLeft(initialTime)
     setExtendedTime(0)
@@ -72,7 +74,7 @@ const Timer: React.FC<TimerProps> = ({ topic, initialTime, onAddHistory }) => {
     setIsRunning(false)
 
     const totalExtendedMin = Math.floor(extendedTime / 60)
-    onAddHistory(`0秒リセット (${topic}): 合計 ${totalExtendedMin}分 延長`)
+    onAddHistory(`⏳ 0秒リセット (${topic}): 合計 ${totalExtendedMin}分 延長`)
 
     // 次回カウントダウンでアラームが鳴らないよう少し待つ
     setTimeout(() => setIsManuallyReset(false), 1000)
