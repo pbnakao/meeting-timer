@@ -1,31 +1,75 @@
 import { useState, useEffect } from 'react'
 import Timer from './components/Timer'
+import History from './components/History'
 import './styles/global.scss'
 
-const STORAGE_KEY = 'agenda-timer-data' // ローカルストレージのキー名
+// ローカルストレージ用のキー
+const STORAGE_KEY = 'agenda-timer-data'
+const HISTORY_KEY = 'agenda-timer-history'
+
+// 履歴の型
+interface HistoryItem {
+  timestamp: string
+  action: string
+}
 
 function App() {
+  // 初期表示時のタブ名
   useEffect(() => {
-    document.title = 'アジェンダタイマー' // 初期表示時のタブ名を設定
+    document.title = 'アジェンダタイマー'
   }, [])
 
+  // アジェンダ関連
   const [agendaItems, setAgendaItems] = useState<
     { topic: string; minutes: number; seconds: number }[]
   >([])
   const [timers, setTimers] = useState<{ topic: string; time: number }[]>([])
 
-  // 🌟 1️⃣ ローカルストレージからデータを読み込む
+  // 履歴を全体管理
+  const [history, setHistory] = useState<HistoryItem[]>([])
+
+  // ======================
+  // アジェンダ保存・復元
+  // ======================
+
+  // 1️⃣ ローカルストレージからデータを読み込む
   useEffect(() => {
     const savedData = localStorage.getItem(STORAGE_KEY)
     if (savedData) {
       setAgendaItems(JSON.parse(savedData))
     }
+
+    // 履歴も読み込み
+    const savedHistory = localStorage.getItem(HISTORY_KEY)
+    if (savedHistory) {
+      setHistory(JSON.parse(savedHistory))
+    }
   }, [])
 
-  // 🌟 2️⃣ データをローカルストレージに保存
+  // 2️⃣ データをローカルストレージに保存
   const saveToLocalStorage = (data: typeof agendaItems) => {
     localStorage.setItem(STORAGE_KEY, JSON.stringify(data))
   }
+
+  // 履歴を保存
+  const saveHistoryToLocalStorage = (newHistory: HistoryItem[]) => {
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(newHistory))
+  }
+
+  // 履歴を追加
+  const addHistory = (action: string) => {
+    const entry: HistoryItem = {
+      timestamp: new Date().toLocaleTimeString(),
+      action,
+    }
+    const newHistory = [entry, ...history.slice(0, 24)] // 最新25件を保持
+    setHistory(newHistory)
+    saveHistoryToLocalStorage(newHistory)
+  }
+
+  // ======================
+  // アジェンダ項目の操作
+  // ======================
 
   const addAgendaItem = () => {
     const newAgenda = [...agendaItems, { topic: '', minutes: 0, seconds: 1 }]
@@ -65,49 +109,62 @@ function App() {
   }
 
   return (
-    <div className="agenda-container">
-      <h2>アジェンダ入力</h2>
-      <div id="agenda-list">
-        {agendaItems.map((item, index) => (
-          <div key={index} className="agenda-item">
-            <input
-              type="text"
-              placeholder="トピック名"
-              value={item.topic}
-              onChange={(e) => updateAgendaItem(index, 'topic', e.target.value)}
-            />
-            <input
-              type="number"
-              placeholder="分"
-              min="0"
-              value={item.minutes}
-              onChange={(e) =>
-                updateAgendaItem(index, 'minutes', Number(e.target.value))
-              }
-            />
-            <input
-              type="number"
-              placeholder="秒"
-              min="0"
-              max="59"
-              value={item.seconds}
-              onChange={(e) =>
-                updateAgendaItem(index, 'seconds', Number(e.target.value))
-              }
-            />
-            <button onClick={() => removeAgendaItem(index)}>削除</button>
-          </div>
-        ))}
-      </div>
-      <button onClick={addAgendaItem}>アジェンダ追加</button>
-      <button onClick={generateTimers}>タイマー生成</button>
+    <div className="app-layout">
+      {/* 左側: アジェンダ管理 & タイマー生成 */}
+      <div className="agenda-container">
+        <h2>アジェンダ入力</h2>
+        <div id="agenda-list">
+          {agendaItems.map((item, index) => (
+            <div key={index} className="agenda-item">
+              <input
+                type="text"
+                placeholder="トピック名"
+                value={item.topic}
+                onChange={(e) =>
+                  updateAgendaItem(index, 'topic', e.target.value)
+                }
+              />
+              <input
+                type="number"
+                placeholder="分"
+                min="0"
+                value={item.minutes}
+                onChange={(e) =>
+                  updateAgendaItem(index, 'minutes', Number(e.target.value))
+                }
+              />
+              <input
+                type="number"
+                placeholder="秒"
+                min="0"
+                max="59"
+                value={item.seconds}
+                onChange={(e) =>
+                  updateAgendaItem(index, 'seconds', Number(e.target.value))
+                }
+              />
+              <button onClick={() => removeAgendaItem(index)}>削除</button>
+            </div>
+          ))}
+        </div>
+        <button onClick={addAgendaItem}>アジェンダ追加</button>
+        <button onClick={generateTimers}>タイマー生成</button>
 
-      <h2>タイマー一覧</h2>
-      <div id="timer-list" className="timer-list">
-        {timers.map((item, index) => (
-          <Timer key={index} topic={item.topic} initialTime={item.time} />
-        ))}
+        <h2>タイマー一覧</h2>
+        <div id="timer-list" className="timer-list">
+          {timers.map((item, index) => (
+            <Timer
+              key={index}
+              topic={item.topic}
+              initialTime={item.time}
+              onAddHistory={addHistory}
+            />
+          ))}
+        </div>
       </div>
+
+      {/* 右側: 履歴表示 */}
+      <History history={history} />
     </div>
   )
 }
