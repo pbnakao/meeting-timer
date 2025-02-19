@@ -1,50 +1,54 @@
-# React + TypeScript + Vite
+# アジェンダタイマー
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+アジェンダタイマーは、会議中の時間管理を効果的に行うためのウェブアプリケーションです。ReactとTypeScriptで構築されており、タイマーを設定してアジェンダ項目を追跡するためのシンプルで直感的なインターフェースを提供します。
 
-Currently, two official plugins are available:
+## 特徴
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+- 複数のアジェンダ項目に対してタイマーを設定可能
+- タイマー終了時に視覚および音声アラートを提供
+- 様々なデバイスで使用可能なレスポンシブデザイン
 
-## Expanding the ESLint configuration
+## インストール
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+アジェンダタイマーを始めるには、以下の手順に従ってください：
 
-- Configure the top-level `parserOptions` property like this:
+1. **リポジトリをクローンする：**
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+   ```bash
+   git clone https://github.com/your-username/agenda-timer.git
+   cd agenda-timer
+   ```
+
+2. **依存関係をインストールする：**
+
+   ```bash
+   npm install
+   ```
+
+## 使用方法
+
+ローカルでアプリケーションを実行するには、以下のコマンドを使用してください：
+
+```bash
+npm run dev
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
+これにより開発サーバーが起動し、`http://localhost:3000`でアプリケーションをブラウザで確認できます。
 
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
+## デプロイ
 
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+アジェンダタイマーは、以下のコマンドを使用してGitHub Pagesにデプロイできます：
+
+```bash
+npm run deploy
 ```
+
+`vite.config.ts`の`base`オプションがリポジトリ名に正しく設定されていることを確認してください。
+
+## 貢献
+
+貢献は歓迎します！リポジトリをフォークし、改善やバグ修正のためのプルリクエストを送信してください。
+
+## ライセンス
+
+このプロジェクトはMITライセンスの下でライセンスされています。詳細は[LICENSE](LICENSE)ファイルを参照してください。
