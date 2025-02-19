@@ -67,6 +67,12 @@ function App() {
     saveHistoryToLocalStorage(newHistory)
   }
 
+  // 🌟 履歴をクリア
+  const clearHistory = () => {
+    setHistory([])
+    localStorage.removeItem(HISTORY_KEY) // ローカルストレージから履歴を削除
+  }
+
   // ======================
   // アジェンダ項目の操作
   // ======================
@@ -163,8 +169,11 @@ function App() {
         </div>
       </div>
 
-      {/* 右側: 履歴表示 */}
+      {/* 左側: 履歴表示 */}
       <History history={history} />
+      <button onClick={clearHistory} className="clear-history-btn">
+        操作履歴をクリア
+      </button>
     </div>
   )
 }
