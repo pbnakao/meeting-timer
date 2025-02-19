@@ -1,0 +1,32 @@
+.draggable-panel {
+  position: fixed;
+  z-index: 999; // 前面に
+  width: 300px;
+  border: 1px solid #ccc;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+
+  // ドラッグ中にポインターが動かない現象を防ぐため、全領域で mousemove を拾う
+  &:active {
+    cursor: grabbing;
+  }
+}
+
+.drag-header {
+  background: #eee;
+  padding: 6px;
+  cursor: grab; // ドラッグ用
+  user-select: none; // テキスト選択を無効化
+  border-bottom: 1px solid #ccc;
+  display: flex;
+  align-items: center;
+}
+
+.drag-handle {
+  margin-right: 8px;
+}
+
+.content {
+  padding: 10px;
+}

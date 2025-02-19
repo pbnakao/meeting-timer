@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import Timer from './components/Timer'
 import History from './components/History'
 import './styles/global.scss'
+import DraggablePanel from './components/DraggablePanel'
 
 // ローカルストレージ用のキー
 const STORAGE_KEY = 'agenda-timer-data'
@@ -170,10 +171,12 @@ function App() {
       </div>
 
       <div className="history-panel">
-        <History history={history} />
-        <button onClick={clearHistory} className="clear-history-btn">
-          操作履歴をクリア
-        </button>
+        <DraggablePanel>
+          <History history={history} />
+          <button onClick={clearHistory} className="clear-history-btn">
+            操作履歴をクリア
+          </button>
+        </DraggablePanel>
       </div>
     </div>
   )
