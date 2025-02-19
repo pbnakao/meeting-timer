@@ -169,11 +169,12 @@ function App() {
         </div>
       </div>
 
-      {/* 左側: 履歴表示 */}
-      <History history={history} />
-      <button onClick={clearHistory} className="clear-history-btn">
-        操作履歴をクリア
-      </button>
+      <div className="history-panel">
+        <History history={history} />
+        <button onClick={clearHistory} className="clear-history-btn">
+          操作履歴をクリア
+        </button>
+      </div>
     </div>
   )
 }
